@@ -1,0 +1,9 @@
+{
+    "name": "golang container",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "go",
+    "workspaceFolder": "/workspace/app/backend",
+    "extensions": [
+        "golang.go"
+    ]
+}

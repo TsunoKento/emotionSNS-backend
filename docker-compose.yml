@@ -1,0 +1,10 @@
+go:
+  image: golang:1.17.5-alpine
+  ports:
+    - "8000:8000"
+  volumes:
+    - .:/workspace/app/backend
+  working_dir: /workspace/app/backend
+  tty: true
+  env_file:
+    - .env
