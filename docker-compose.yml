@@ -1,5 +1,5 @@
 go:
-  image: golang:1.17.5-alpine
+  build: .
   ports:
     - "8000:8000"
   volumes:
