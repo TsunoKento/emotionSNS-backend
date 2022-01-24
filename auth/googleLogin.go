@@ -7,9 +7,10 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/labstack/echo"
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -19,7 +20,7 @@ var (
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		RedirectURL:  "http://localhost:8000/callback",
-		Scopes:       []string{"email", "profile"},
+		Scopes:       []string{"profile"},
 		Endpoint:     google.Endpoint,
 	}
 	randomState = randString(8)
@@ -36,7 +37,6 @@ func randString(n int) string {
 
 type GoogleUser struct {
 	ID      string `json:"id"`
-	Email   string `json:"email"`
 	Name    string `json:"name"`
 	Picture string `json:"picture"`
 }
@@ -81,17 +81,17 @@ func GoogleCallback(c echo.Context) error {
 
 	//TODO GoogleIDの有無で過去にアカウントを作ったことがあるか判断、無ければデータベースに登録する
 	fmt.Println(gu.ID)
-	fmt.Println(gu.Email)
 	fmt.Println(gu.Name)
 	fmt.Println(gu.Picture)
 
-	//TODO cookieをHttpOnlyにしてjavascriptで改ざんできないようにする
-	cookie := new(http.Cookie)
-	cookie.Name = "session"
-	cookie.Value = randString(12)
-	cookie.Expires = time.Now().Add(2160 * time.Hour)
-	cookie.Path = "/"
-	c.SetCookie(cookie)
+	sess, _ := session.Get("session", c)
+	sess.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 7,
+		HttpOnly: true,
+	}
+	sess.Values["id"] = gu.ID
+	sess.Save(c.Request(), c.Response())
 
 	return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")
 }
