@@ -90,7 +90,8 @@ func GoogleCallback(c echo.Context) error {
 		MaxAge:   86400 * 7,
 		HttpOnly: true,
 	}
-	sess.Values["id"] = gu.ID
+	sess.Values["userId"] = "kentots"
+	sess.Values["auth"] = true
 	sess.Save(c.Request(), c.Response())
 
 	return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")

@@ -3,6 +3,7 @@ package main
 import (
 	"TsunoKento/emotionSNS/auth"
 	"TsunoKento/emotionSNS/post"
+	"TsunoKento/emotionSNS/user"
 	"net/http"
 	"os"
 
@@ -26,6 +27,7 @@ func main() {
 	e.GET("/api/auth/google", auth.GoogleLogin)
 	e.GET("/callback", auth.GoogleCallback)
 	e.POST("/api/auth/logout", auth.Logout)
+	e.POST("/api/user/currentuser", user.CurrentUser)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
