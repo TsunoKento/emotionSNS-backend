@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -53,7 +54,7 @@ func GoogleCallback(c echo.Context) error {
 	}
 
 	randomState = randString(8)
-	token, err := conf.Exchange(oauth2.NoContext, c.FormValue("code"))
+	token, err := conf.Exchange(context.Background(), c.FormValue("code"))
 	if err != nil {
 		fmt.Printf("トークンを取得できませんでした: %s\n", err.Error())
 		return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")
