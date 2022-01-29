@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,15 +14,20 @@ type Response struct {
 
 func Logout(c echo.Context) error {
 	r := new(Response)
-	cookie, err := c.Cookie("session")
+
+	sess, err := session.Get("session", c)
 	if err != nil {
 		r.Message = err.Error()
-		return c.JSON(http.StatusBadRequest, r)
+		return c.JSON(http.StatusForbidden, r)
 	}
-	cookie.Path = "/"
-	cookie.MaxAge = -1
-	c.SetCookie(cookie)
-
-	r.Message = "ログアウト成功"
+	fmt.Println(sess.Values["auth"])
+	if a := sess.Values["auth"]; a == true {
+		sess.Values["auth"] = false
+		sess.Save(c.Request(), c.Response())
+		r.Message = "ログアウト成功"
+		return c.JSON(http.StatusOK, r)
+	} else {
+		fmt.Println("すでにログアウトしています")
+	}
 	return c.JSON(http.StatusOK, r)
 }
