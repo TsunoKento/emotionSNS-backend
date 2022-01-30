@@ -2,16 +2,20 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var (
@@ -36,10 +40,15 @@ func randString(n int) string {
 	return string(b)
 }
 
-type GoogleUser struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Picture string `json:"picture"`
+type User struct {
+	ID           uint
+	ThirdPartyID string
+	UserID       string
+	Name         string
+	Image        string
+	Email        string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func GoogleLogin(c echo.Context) error {
@@ -84,13 +93,28 @@ func GoogleCallback(c echo.Context) error {
 	}
 	fmt.Println(claims)
 
+	dsn := "root:root@tcp(db:3306)/emotion_sns?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Printf("DBアクセスに失敗しました: %s\n", err.Error())
+		return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")
+	}
+
+	var user User
+	result := db.Where("third_party_id = ?", claims.Subject).Take(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		uid := randString(8)
+		user = User{ThirdPartyID: claims.Subject, UserID: uid, Name: claims.Name, Email: claims.Email, Image: claims.Picture}
+		db.Create(&user)
+	}
+
 	sess, _ := session.Get("session", c)
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   86400 * 7,
 		HttpOnly: true,
 	}
-	sess.Values["userId"] = "kentots"
+	sess.Values["id"] = user.ID
 	sess.Values["auth"] = true
 	sess.Save(c.Request(), c.Response())
 
