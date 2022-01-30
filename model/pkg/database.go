@@ -1,7 +1,7 @@
 /*
 config は各種設定を行うためのパッケージです。
 */
-package config
+package model
 
 import (
 	"gorm.io/driver/mysql"

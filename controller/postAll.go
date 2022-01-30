@@ -1,10 +1,11 @@
-package post
+package controller
 
-import (
-	"net/http"
-
-	"github.com/labstack/echo/v4"
-)
+type PostData struct {
+	Type int64    `json:"type"`
+	User User     `json:"user"`
+	Post Post     `json:"post"`
+	Tags []string `json:"tags,omitempty"`
+}
 
 type User struct {
 	ID    string `json:"id"`
@@ -20,14 +21,7 @@ type Post struct {
 	Like    int64  `json:"like"`
 }
 
-type PostData struct {
-	Type int64    `json:"type"`
-	User User     `json:"user"`
-	Post Post     `json:"post"`
-	Tags []string `json:"tags,omitempty"`
-}
-
-func ShowAll(c echo.Context) error {
+func PostAll() ([]PostData, error) {
 	pd := []PostData{{
 		Type: 0,
 		User: User{
@@ -124,5 +118,6 @@ func ShowAll(c echo.Context) error {
 			},
 		},
 	}
-	return c.JSON(http.StatusOK, pd)
+
+	return pd, nil
 }

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"TsunoKento/emotionSNS/auth"
-	"TsunoKento/emotionSNS/post"
-	"TsunoKento/emotionSNS/user"
+	"TsunoKento/emotionSNS/view"
 	"net/http"
 	"os"
 
@@ -25,12 +23,12 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	e.GET("/api/postAll", post.ShowAll)
-	e.POST("/api/addPost", post.AddPost)
-	e.GET("/api/auth/google", auth.GoogleLogin)
-	e.GET("/callback", auth.GoogleCallback)
-	e.POST("/api/auth/logout", auth.Logout)
-	e.POST("/api/user/currentuser", user.CurrentUser)
+	e.GET("/post/all", view.AllPost)
+	e.POST("/post/add", view.AddPost)
+	e.GET("/user/login/google", view.GoogleLogin)
+	e.GET("/user/login/google/callback", view.CallbackGoogleLogin)
+	e.POST("/user/logout", view.LogoutUser)
+	e.POST("/user/loginUser", view.LoginUser)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
