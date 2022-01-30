@@ -6,5 +6,5 @@
     "extensions": [
         "golang.go"
     ],
-    "postCreateCommand": "apk add --no-cache gcc musl-dev",
+    "postCreateCommand": "apk add --no-cache gcc musl-dev openssh",
 }

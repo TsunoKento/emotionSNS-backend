@@ -1,2 +1,5 @@
 .DS_Store
 .env
+
+/db/data/*
+!/db/data/.gitkeep
