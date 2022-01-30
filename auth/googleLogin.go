@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"TsunoKento/emotionSNS/model"
 	"context"
 	"errors"
 	"fmt"
@@ -14,7 +15,6 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/oauth2"
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -91,21 +91,11 @@ func GoogleCallback(c echo.Context) error {
 		fmt.Printf("JSONを検証できませんでした: %s\n", err.Error())
 		return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")
 	}
-	fmt.Println(claims)
 
-	dsn := "root:root@tcp(db:3306)/emotion_sns?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		fmt.Printf("DBアクセスに失敗しました: %s\n", err.Error())
-		return c.Redirect(http.StatusTemporaryRedirect, "http://localhost:3000")
-	}
-
-	var user User
-	result := db.Where("third_party_id = ?", claims.Subject).Take(&user)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	user, err := model.SearchByThirdPartyID(claims.Subject)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		uid := randString(8)
-		user = User{ThirdPartyID: claims.Subject, UserID: uid, Name: claims.Name, Email: claims.Email, Image: claims.Picture}
-		db.Create(&user)
+		user, _ = model.CreateUser(claims.Subject, uid, claims.Name, claims.Email, claims.Picture)
 	}
 
 	sess, _ := session.Get("session", c)
