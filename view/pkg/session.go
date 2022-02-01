@@ -29,6 +29,7 @@ func SetUserIDToSession(id uint, c echo.Context) {
 	sess.Save(c.Request(), c.Response())
 }
 
+//sessionを削除する
 func DeleteSession(c echo.Context) error {
 	sess, err := session.Get("session", c)
 	if err != nil {
