@@ -1,6 +1,3 @@
-/*
-config は各種設定を行うためのパッケージです。
-*/
 package model
 
 import (
