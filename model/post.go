@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Post struct {
 	ID          uint
@@ -13,7 +15,7 @@ type Post struct {
 	UpdatedAt   time.Time
 }
 
-type PostWithUser struct {
+type PostWithUserWithLikes struct {
 	PostID      uint      `json:"postId"`
 	Content     string    `json:"content"`
 	PostImage   string    `json:"postImage"`
@@ -22,6 +24,8 @@ type PostWithUser struct {
 	UserID      string    `json:"userId"`
 	Name        string    `json:"name"`
 	UserImage   string    `json:"userImage"`
+	LikeFlag    bool      `json:"likeFlag"` //0ならfalse, 1ならtrueになる
+	LikeCount   uint      `json:"likeCount"`
 }
 
 //新規投稿をデータベースに格納する
@@ -31,12 +35,14 @@ func CreatePost(p *Post) (*Post, error) {
 }
 
 //すべての投稿を取得する
-func GetAllPostWithUser() (*[]PostWithUser, error) {
-	pwu := new([]PostWithUser)
+func GetAllPostWithUser() (*[]PostWithUserWithLikes, error) {
+	p := new([]PostWithUserWithLikes)
 	r := db.Table("posts").
-		Select("posts.id as post_id, posts.content, posts.image as post_image, posts.published_at, posts.emotion_id, users.user_id, users.name, users.image as user_image").
-		Joins("inner join users on posts.user_id = users.id").
-		Order("published_at desc").
-		Scan(&pwu)
-	return pwu, r.Error
+		Select("posts.id AS post_id, posts.content, posts.image AS post_image, posts.published_at, posts.emotion_id, users.user_id, users.name, users.image AS user_image, COALESCE(flag, ?) AS like_flag, COALESCE(count, ?) AS like_count", 0, 0).
+		Joins("INNER JOIN users ON posts.user_id = users.id").
+		Joins("LEFT OUTER JOIN (?) AS f ON posts.id = f.post_id", db.Table("likes").Select("post_id, (CASE WHEN user_id = ? THEN 1 END) AS flag", 2).Where("user_id = ?", 2)).
+		Joins("LEFT OUTER JOIN (?) AS l ON posts.id = l.post_id", db.Table("likes").Select("post_id, COUNT(*) AS count").Group("post_id")).
+		Order("published_at DESC").
+		Scan(&p)
+	return p, r.Error
 }

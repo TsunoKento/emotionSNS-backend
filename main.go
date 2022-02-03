@@ -29,6 +29,7 @@ func main() {
 	e.GET("/user/login/google/callback", view.CallbackGoogleLogin)
 	e.POST("/user/logout", view.LogoutUser)
 	e.POST("/user/loginUser", view.LoginUser)
+	e.POST("/like", view.ToggleLike)
 
 	e.Logger.Fatal(e.Start(":8000"))
 }
