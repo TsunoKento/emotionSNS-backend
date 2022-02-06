@@ -9,14 +9,15 @@ type ResponseUser struct {
 }
 
 func UserLoginSpecific(id uint) (*ResponseUser, error) {
-	u := new(ResponseUser)
-	user, err := model.SearchByID(id)
+	ru := new(ResponseUser)
+	u := new(model.User)
+	err := u.SearchByID(id)
 	if err != nil {
-		return u, err
+		return ru, err
 	}
-	u.UserID = user.UserID
-	u.Name = user.Name
-	u.Image = user.Image
+	ru.UserID = u.UserID
+	ru.Name = u.Name
+	ru.Image = u.Image
 
-	return u, nil
+	return ru, nil
 }
