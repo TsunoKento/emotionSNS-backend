@@ -12,11 +12,7 @@ func PostAdd(content string, emotion, id uint) (*Response, error) {
 	r := new(Response)
 
 	post := new(model.Post)
-	post.UserID = id
-	post.Content = content
-	post.EmotionID = emotion
-
-	_, err := model.CreatePost(post)
+	err := post.CreatePost(id, emotion, content)
 	if err != nil {
 		return r, err
 	}

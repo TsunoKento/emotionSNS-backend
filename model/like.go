@@ -7,13 +7,13 @@ type Like struct {
 }
 
 //いいねを追加します
-func AddLike(l *Like) (*Like, error) {
+func (l *Like) AddLike() (*Like, error) {
 	r := db.Create(&l)
 	return l, r.Error
 }
 
 //いいねを削除します
-func DeleteLike(l *Like) (*Like, error) {
+func (l *Like) DeleteLike() (*Like, error) {
 	r := db.Where("user_id = ? AND post_id = ?", l.UserID, l.PostID).Delete(l)
 	return l, r.Error
 }
