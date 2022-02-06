@@ -27,6 +27,7 @@ func main() {
 	e.POST("/post/add", view.AddPost)
 	e.GET("/user/login/google", view.GoogleLogin)
 	e.GET("/user/login/google/callback", view.CallbackGoogleLogin)
+	e.POST("/user/getUser", view.UserGet)
 	e.POST("/user/logout", view.LogoutUser)
 	e.POST("/user/loginUser", view.LoginUser)
 	e.POST("/like", view.ToggleLike)
