@@ -19,12 +19,23 @@ type SlicePostWithUserWithLikes []PostWithUserWithLikes
 
 //すべての投稿を取得してログイン中のユーザーがいいねを押しているかも返す
 func (p *SlicePostWithUserWithLikes) GetAllPostWithUser(uid uint) error {
-	//p := new([]PostWithUserWithLikes)
 	r := db.Table("posts").
 		Select("posts.id AS post_id, posts.content, posts.image AS post_image, posts.published_at, posts.emotion_id, users.user_id, users.name, users.image AS user_image, COALESCE(flag, ?) AS like_flag, COALESCE(count, ?) AS like_count", 0, 0).
 		Joins("INNER JOIN users ON posts.user_id = users.id").
 		Joins("LEFT OUTER JOIN (?) AS f ON posts.id = f.post_id", db.Table("likes").Select("post_id, 1 AS flag").Where("user_id = ?", uid)).
 		Joins("LEFT OUTER JOIN (?) AS l ON posts.id = l.post_id", db.Table("likes").Select("post_id, COUNT(*) AS count").Group("post_id")).
+		Order("published_at DESC").
+		Scan(&p)
+	return r.Error
+}
+
+func (p *SlicePostWithUserWithLikes) GetAllPostWithUserWhereUserID(id uint, uid string) error {
+	r := db.Table("posts").
+		Select("posts.id AS post_id, posts.content, posts.image AS post_image, posts.published_at, posts.emotion_id, users.user_id, users.name, users.image AS user_image, COALESCE(flag, ?) AS like_flag, COALESCE(count, ?) AS like_count", 0, 0).
+		Joins("INNER JOIN users ON posts.user_id = users.id").
+		Joins("LEFT OUTER JOIN (?) AS f ON posts.id = f.post_id", db.Table("likes").Select("post_id, 1 AS flag").Where("user_id = ?", id)).
+		Joins("LEFT OUTER JOIN (?) AS l ON posts.id = l.post_id", db.Table("likes").Select("post_id, COUNT(*) AS count").Group("post_id")).
+		Where("users.user_id = ?", uid).
 		Order("published_at DESC").
 		Scan(&p)
 	return r.Error

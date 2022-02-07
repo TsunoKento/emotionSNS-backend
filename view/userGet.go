@@ -8,14 +8,9 @@ import (
 )
 
 func UserGet(c echo.Context) error {
-	var req struct {
-		UserID string `json:"userId"`
-	}
-	if err := c.Bind(&req); err != nil {
-		return c.String(http.StatusBadRequest, "リクエストの型に合わないです")
-	}
+	uid := c.Param("uid")
 
-	u, err := controller.GetUser(req.UserID)
+	u, err := controller.GetUser(uid)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "ユーザー情報を取得できませんでした")
 	}

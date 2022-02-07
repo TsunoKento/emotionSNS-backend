@@ -24,10 +24,11 @@ func main() {
 	}))
 
 	e.GET("/post/all", view.AllPost)
+	e.GET("/post/all/:uid", view.AllPost)
 	e.POST("/post/add", view.AddPost)
 	e.GET("/user/login/google", view.GoogleLogin)
 	e.GET("/user/login/google/callback", view.CallbackGoogleLogin)
-	e.POST("/user/getUser", view.UserGet)
+	e.GET("/user/getUser/:uid", view.UserGet)
 	e.POST("/user/logout", view.LogoutUser)
 	e.POST("/user/loginUser", view.LoginUser)
 	e.POST("/like", view.ToggleLike)

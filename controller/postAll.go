@@ -4,9 +4,14 @@ import (
 	"TsunoKento/emotionSNS/model"
 )
 
-func PostAll(id uint) (*model.SlicePostWithUserWithLikes, error) {
+func PostAll(id uint, uid string) (*model.SlicePostWithUserWithLikes, error) {
 	p := new(model.SlicePostWithUserWithLikes)
-	err := p.GetAllPostWithUser(id)
+	var err error
+	if uid == "" {
+		err = p.GetAllPostWithUser(id)
+	} else {
+		err = p.GetAllPostWithUserWhereUserID(id, uid)
+	}
 
 	return p, err
 }
