@@ -44,3 +44,9 @@ func (u *User) SearchByUserID(uid string) error {
 	r := db.Where("user_id = ?", uid).First(&u)
 	return r.Error
 }
+
+//IDのユーザー情報を変更する
+func (u *User) UpdateUser() error {
+	r := db.Updates(u)
+	return r.Error
+}
