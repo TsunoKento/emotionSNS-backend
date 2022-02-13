@@ -29,6 +29,7 @@ func (p *SlicePostWithUserWithLikes) GetAllPostWithUser(uid uint) error {
 	return r.Error
 }
 
+//該当のUserIDの投稿を取得してログイン中のユーザーがいいねを押しているかも返す
 func (p *SlicePostWithUserWithLikes) GetAllPostWithUserWhereUserID(id uint, uid string) error {
 	r := db.Table("posts").
 		Select("posts.id AS post_id, posts.content, posts.image AS post_image, posts.published_at, posts.emotion_id, users.user_id, users.name, users.image AS user_image, COALESCE(flag, ?) AS like_flag, COALESCE(count, ?) AS like_count", 0, 0).
