@@ -57,7 +57,6 @@ func CallbackGoogleLogin(state, code string) (*model.User, error) {
 		Subject string `json:"sub"`
 		Name    string `json:"name"`
 		Email   string `json:"email"`
-		Picture string `json:"picture"`
 	}
 
 	if err := idToken.Claims(&claims); err != nil {
@@ -68,7 +67,7 @@ func CallbackGoogleLogin(state, code string) (*model.User, error) {
 	err = user.SearchByThirdPartyID(claims.Subject)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		uid := pkg.RandString(12)
-		if err := user.CreateUser(claims.Subject, uid, claims.Name, claims.Email, claims.Picture); err != nil {
+		if err := user.CreateUser(claims.Subject, uid, claims.Name, claims.Email); err != nil {
 			return user, err
 		}
 	}

@@ -14,9 +14,15 @@ func AllPost(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	pd, err := controller.PostAll(id)
+	uid := c.Param("uid")
+
+	pd, err := controller.PostAll(id, uid)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, nil)
+	}
+
+	if len(*pd) == 0 {
+		return c.NoContent(http.StatusNoContent)
 	}
 	return c.JSON(http.StatusOK, pd)
 }

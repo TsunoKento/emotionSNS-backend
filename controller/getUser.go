@@ -5,17 +5,11 @@ import (
 	"TsunoKento/emotionSNS/model"
 )
 
-type ResponseUser struct {
-	UserID string `json:"userId"`
-	Name   string `json:"name"`
-	Image  string `json:"image"`
-}
-
-func UserLoginSpecific(id uint) (*ResponseUser, error) {
+func GetUser(uid string) (*ResponseUser, error) {
 	ru := new(ResponseUser)
 	u := new(model.User)
-	err := u.SearchByID(id)
-	if err != nil {
+
+	if err := u.SearchByUserID(uid); err != nil {
 		return ru, err
 	}
 
