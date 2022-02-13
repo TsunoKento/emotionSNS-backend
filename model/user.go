@@ -21,8 +21,8 @@ var (
 )
 
 //ユーザー情報から新しくユーザーを登録する
-func (u *User) CreateUser(tpid, uid, name, email, image string) error {
-	u = &User{ThirdPartyID: tpid, UserID: uid, Name: name, Email: email, Image: image}
+func (u *User) CreateUser(tpid, uid, name, email string) error {
+	u = &User{ThirdPartyID: tpid, UserID: uid, Name: name, Email: email}
 	r := db.Create(&u)
 	return r.Error
 }

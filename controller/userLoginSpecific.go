@@ -1,6 +1,9 @@
 package controller
 
-import "TsunoKento/emotionSNS/model"
+import (
+	"TsunoKento/emotionSNS/controller/pkg"
+	"TsunoKento/emotionSNS/model"
+)
 
 type ResponseUser struct {
 	UserID string `json:"userId"`
@@ -15,9 +18,15 @@ func UserLoginSpecific(id uint) (*ResponseUser, error) {
 	if err != nil {
 		return ru, err
 	}
+
+	img, err := pkg.GetS3ImageEncode(u.Image)
+	if err != nil {
+		return ru, err
+	}
+
 	ru.UserID = u.UserID
 	ru.Name = u.Name
-	ru.Image = u.Image
+	ru.Image = img
 
 	return ru, nil
 }
