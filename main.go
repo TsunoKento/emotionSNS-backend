@@ -16,6 +16,10 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+		CookiePath: "/",
+	}))
+	e.Use(middleware.CSRF())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"http://localhost:3000"},
