@@ -1,5 +1,3 @@
-CREATE DATABASE emotion_sns;
-
 use emotion_sns;
 
 CREATE TABLE users (

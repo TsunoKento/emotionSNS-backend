@@ -4,4 +4,6 @@ EXPOSE 3306
 
 ADD ./my.cnf /etc/mysql/cnf.d/my.cnf
 
+COPY ./init/* /docker-entrypoint-initdb.d/
+
 CMD ["mysqld"]
