@@ -18,7 +18,7 @@ var (
 	conf        = &oauth2.Config{
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		RedirectURL:  "http://localhost:8000/user/login/google/callback",
+		RedirectURL:  os.Getenv("GOOGLE_REDIRECT_URL"),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 		Endpoint:     provider.Endpoint(),
 	}
