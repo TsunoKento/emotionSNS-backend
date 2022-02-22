@@ -4,6 +4,7 @@ import (
 	"TsunoKento/emotionSNS/model"
 	"TsunoKento/emotionSNS/pkg"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -26,16 +27,21 @@ var (
 	randomState = pkg.RandString(8)
 )
 
-func SetLoginUrl() (string, error) {
-	randomState = pkg.RandString(8)
-	url := conf.AuthCodeURL(randomState)
-	return url, nil
+func SetLoginUrl() string {
+	state := pkg.RandString(15)
+	// TODO データベースにstateを保存
+	enc := base64.StdEncoding.EncodeToString([]byte(state))
+	url := conf.AuthCodeURL(enc)
+	return url
 }
 
 func CallbackGoogleLogin(state, code string) (*model.User, error) {
+	// TODO 渡されたstateをdecodeしてデータベースに存在するかを検証する
 	if state != randomState {
 		return nil, errors.New("有効なstateがありません")
 	}
+
+	// TODO 検証が終わったら該当行を削除する
 
 	token, err := conf.Exchange(context.Background(), code)
 	if err != nil {
