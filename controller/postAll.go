@@ -19,7 +19,7 @@ func PostAll(id uint, uid string) (*model.SlicePostWithUserWithLikes, error) {
 	}
 
 	slice := *p
-	for i, _ := range slice {
+	for i := range slice {
 		if slice[i].UserImage != "" {
 			ui, _ := pkg.GetS3ImageEncode(slice[i].UserImage)
 			slice[i].UserImage = ui

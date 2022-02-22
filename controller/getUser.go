@@ -13,14 +13,16 @@ func GetUser(uid string) (*ResponseUser, error) {
 		return ru, err
 	}
 
-	img, err := pkg.GetS3ImageEncode(u.Image)
-	if err != nil {
-		return ru, err
+	if u.Image != "" {
+		img, err := pkg.GetS3ImageEncode(u.Image)
+		if err != nil {
+			return ru, err
+		}
+		ru.Image = img
 	}
 
 	ru.UserID = u.UserID
 	ru.Name = u.Name
-	ru.Image = img
 
 	return ru, nil
 }

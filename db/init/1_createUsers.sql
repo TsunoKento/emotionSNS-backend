@@ -12,4 +12,4 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
-INSERT INTO users (third_party_id, user_id, name, image, email) VALUES("123456789012", "yamada_taroooo", "太郎Y", "https://source.unsplash.com/p-6S-filXzM", "tarou_yamada@mail.com");
+INSERT INTO users (third_party_id, user_id, name, email) VALUES("123456789012", "yamada_taroooo", "太郎Y", "tarou_yamada@mail.com");

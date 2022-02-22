@@ -4,6 +4,7 @@ import (
 	"TsunoKento/emotionSNS/controller"
 	view "TsunoKento/emotionSNS/view/pkg"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 )
@@ -29,7 +30,7 @@ func ChangeProfile(c echo.Context) error {
 	}
 
 	if req.UserID != "" {
-		return c.JSON(http.StatusSeeOther, "http://localhost:3000/profile/"+req.UserID)
+		return c.JSON(http.StatusSeeOther, os.Getenv("WEB_SERVER_URL")+"/profile/"+req.UserID)
 	}
 	return c.NoContent(http.StatusOK)
 }
