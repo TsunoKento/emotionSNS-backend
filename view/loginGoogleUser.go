@@ -10,7 +10,10 @@ import (
 )
 
 func GoogleLogin(c echo.Context) error {
-	url := controller.SetLoginUrl()
+	url, err := controller.SetLoginUrl()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
 	return c.Redirect(http.StatusTemporaryRedirect, url)
 }
 

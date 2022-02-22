@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"os"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -23,25 +22,32 @@ var (
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 		Endpoint:     provider.Endpoint(),
 	}
-	verifier    = provider.Verifier(&oidc.Config{ClientID: os.Getenv("GOOGLE_CLIENT_ID")})
-	randomState = pkg.RandString(8)
+	verifier = provider.Verifier(&oidc.Config{ClientID: os.Getenv("GOOGLE_CLIENT_ID")})
 )
 
-func SetLoginUrl() string {
+func SetLoginUrl() (string, error) {
 	state := pkg.RandString(15)
-	// TODO データベースにstateを保存
+	s := new(model.State)
+	if err := s.CreateState(state); err != nil {
+		return "", err
+	}
 	enc := base64.StdEncoding.EncodeToString([]byte(state))
 	url := conf.AuthCodeURL(enc)
-	return url
+	return url, nil
 }
 
 func CallbackGoogleLogin(state, code string) (*model.User, error) {
-	// TODO 渡されたstateをdecodeしてデータベースに存在するかを検証する
-	if state != randomState {
-		return nil, errors.New("有効なstateがありません")
+	dec, err := base64.StdEncoding.DecodeString(state)
+	if err != nil {
+		return nil, err
 	}
-
-	// TODO 検証が終わったら該当行を削除する
+	s := new(model.State)
+	if err := s.SearchState(string(dec)); err != nil {
+		return nil, err
+	}
+	if err := s.DeleteState(); err != nil {
+		return nil, err
+	}
 
 	token, err := conf.Exchange(context.Background(), code)
 	if err != nil {
@@ -50,7 +56,6 @@ func CallbackGoogleLogin(state, code string) (*model.User, error) {
 
 	rawIDToken, ok := token.Extra("id_token").(string)
 	if !ok {
-		fmt.Println("IDトークンを取得できませんでした")
 		return nil, errors.New("IDトークンを取得できませんでした")
 	}
 

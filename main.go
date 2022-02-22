@@ -17,10 +17,6 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.CSRF())
-	e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
-		CookiePath: "/",
-	}))
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{os.Getenv("WEB_SERVER_URL")},
