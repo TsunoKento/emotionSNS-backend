@@ -4,7 +4,8 @@
     "service": "go",
     "workspaceFolder": "/workspace/app/backend",
     "extensions": [
-        "golang.go"
+        "golang.go",
+        "humao.rest-client"
     ],
     "postCreateCommand": "apk add --no-cache gcc musl-dev openssh",
 }

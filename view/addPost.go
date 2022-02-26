@@ -3,6 +3,7 @@ package view
 import (
 	"TsunoKento/emotionSNS/controller"
 	view "TsunoKento/emotionSNS/view/pkg"
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -17,6 +18,10 @@ func AddPost(c echo.Context) error {
 	req := new(Request)
 	if err := c.Bind(req); err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	if req.Content == "" {
+		return errors.New("投稿内容が空では登録できません")
 	}
 
 	id, err := view.GetUserIDBySession(c)
