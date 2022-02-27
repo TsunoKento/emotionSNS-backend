@@ -19,20 +19,25 @@ emotionsns のバックエンドになります
 git clone https://github.com/TsunoKento/emotionSNS-backend.git
 ```
 
-2. イメージをビルドする
+2. env.exampleを.envに変更して、db/dataの`.gitkeep`を削除する
+```zsh
+cd emotionSNS-backend && mv .env.example .env && rm db/data/.gitkeep
+```
+
+3. イメージをビルドする
 
 ```zsh
 docker-compose build
 ```
 
-3. コンテナを起動する
+4. コンテナを起動する
 
 ```zsh
 docker-compose up -d
 ```
 
-4. サーバーを起動する
+5. サーバーを起動する
 
 ```zsh
-docker-compose exec go run .
+docker-compose exec go go run .
 ```
