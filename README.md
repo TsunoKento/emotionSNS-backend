@@ -15,7 +15,7 @@ emotionsns のバックエンドになります
 ![er drawio](https://user-images.githubusercontent.com/50817827/155904778-b47b4292-c085-4680-9145-2d33866e5b69.png)
 
 ## サーバー構成図
-![server drawio](https://user-images.githubusercontent.com/50817827/155904798-16a44b3d-48c1-418e-9c99-56f6fd739796.png)
+![server drawio](https://user-images.githubusercontent.com/50817827/155905040-33c12eaa-1fbb-4e2e-8ea5-94894fe39e65.png)
 
 ## 導入方法
 
