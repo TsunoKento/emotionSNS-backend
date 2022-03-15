@@ -11,7 +11,3 @@ func TestRandString(t *testing.T) {
 		t.Fatal("指定された数値以外の数字が返却されています")
 	}
 }
-
-func TestRandString02(t *testing.T) {
-	t.Fatal("Error")
-}
