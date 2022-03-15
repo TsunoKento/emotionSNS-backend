@@ -33,6 +33,8 @@ jobs:
       - store_test_results:
           path: /tmp/test-reports
   deploy:
+    machine:
+      image: circleci/classic:edge
     steps:
       - checkout
       - add_ssh_keys:
@@ -52,7 +54,7 @@ workflows:
               ignore: master
   cd:
     jobs:
-      - build:
+      - build
       - deploy:
           requires:
             - build
