@@ -54,10 +54,10 @@ workflows:
               ignore: master
   cd:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
+      - build:
           filters:
             branches:
               only: master
+      - deploy:
+          requires:
+            - build
